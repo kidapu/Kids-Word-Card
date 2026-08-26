@@ -1,12 +1,17 @@
-# おしゃべりカード（こども英語カードアプリ）
+# こどもアプリ（未就学児向けカードアプリ集）
 
 ## これは何か
 
-未就学児向けの、絵カードをタップすると英語と日本語の発音が鳴るアプリ。
+未就学児向けの、タップすると音が鳴るカードアプリを集めたもの。
 市販の「音の出る英語カード」玩具のデジタル版。**iPad mini** のホーム画面から
 PWA として起動して使うことを想定している（レイアウトは iPad mini を基準に組む）。
 
+トップにアプリが並んでいて、そこから選ぶ。
+
 公開先: https://kidapu.github.io/Kids-Word-Card/
+
+- 🍎 **おしゃべりカード**（`/cards/`）— ことばのカード 88 枚
+- 🔤 **もじカード**（`/letters/`）— アルファベット 26 字とひらがな 46 字
 
 作者の子どもが実際に使う。想定利用シーンは「寝る前に数枚」程度の短時間。
 
@@ -20,7 +25,12 @@ PWA として起動して使うことを想定している（レイアウトは 
 
 ## 現状
 
-Vite + React 19 + Tailwind CSS v4。`main` への push で GitHub Pages に自動デプロイされる。
+Vite + React 19 + Tailwind CSS v4。**アプリごとに別ページ**のマルチページ構成で、
+`main` への push で GitHub Pages に自動デプロイされる。
+共通部分（読み上げ・効果音・ヘッダ・テーマ）は `src/shared/` にある。
+ファイルの置き場所と、アプリを増やす手順は README.md にある。
+
+### おしゃべりカード（`/cards/`）
 
 - ヘッダの **ABC / あいう** で「先に鳴らすことば」を切り替える（ずかん・クイズ共通）。
   あいう を選ぶと日本語が主になり、カードの大きい文字・自動再生・クイズの出題が
@@ -38,14 +48,25 @@ Vite + React 19 + Tailwind CSS v4。`main` への push で GitHub Pages に自�
   正解すると、**出題とは逆のことば → 出題したことば** の順に両方読む
   （英語で出したら「にんじん」→ `carrot`、日本語で出したらその逆）。
   読み終わってから次の問題に進むので、長いことばでも切れない。
-- 効果音は音声ファイルを持たず `src/sfx.js` で Web Audio 合成している。
+- 効果音は音声ファイルを持たず `src/shared/sfx.js` で Web Audio 合成している。
   上のメニューを押したときの「ピン」も同じ仕組み（押した反応が分かるように鳴らす）。
 - カードは `src/cards.js` に 88 枚。5つのカテゴリ（`cat`）で色分けしている。
-- 音声は Web Speech API（`speechSynthesis`）を `useSpeech` フックに閉じ込めてある。
-  **これは暫定。下記の通り mp3 に差し替える。**
 - 絵柄は絵文字のプレースホルダ。
 
-ファイルの置き場所は README.md に一覧がある。
+### もじカード（`/letters/`）
+
+- ABC / あいう でアルファベット（26字）とひらがな（46字）を切り替える。
+- ずかんモード: 五十音表・アルファベット表。押すとその文字を発音する。
+  行の形をそのまま出したいので、グリッドではなく行ごとに並べている
+  （「やゆよ」「わをん」が中央に寄る）。
+- クイズモード: 文字が読まれて 3 つから選ぶ。おしゃべりカードと同じ作り。
+- 「を」「ん」は1文字だと読み飛ばされることがあるので、`letters.js` の `SAY` で
+  読み方だけ差し替えている。増えたらここに足す。
+
+### 共通
+
+- 音声は Web Speech API（`speechSynthesis`）を `useSpeech` フックに閉じ込めてある。
+  **これは暫定。下記の通り mp3 に差し替える。**
 
 ## 次にやること（優先順）
 
@@ -55,6 +76,7 @@ Web Speech API は iOS で声の種類が端末依存になり、日本語と英
 あるいは鳴らないことがある。オフラインでも保証できない。
 
 - `scripts/generate-audio.mjs` を作り、`cards.json` を読んで英日の mp3 を一括生成する。
+  もじカードの文字も同じ仕組みで生成する。
 - TTS は OpenAI TTS か Google Cloud TTS。英日で同じエンジンに揃えて声のトーンを統一する。
 - 生成物は `public/audio/en/{id}.mp3`, `public/audio/ja/{id}.mp3` に出力。
 - API キーは `.env` に置き、`.gitignore` に入れる。生成済み mp3 はコミットする
@@ -99,11 +121,13 @@ Web Speech API は iOS で声の種類が端末依存になり、日本語と英
 ## 技術メモ
 
 - Vite + React 19 + Tailwind CSS v4。Tailwind は `@tailwindcss/vite` プラグイン方式で、
-  設定ファイルは持たず `src/index.css` の `@theme` に色とブレークポイントを書いている。
+  設定ファイルは持たず `src/shared/index.css` の `@theme` に色とブレークポイントを書いている。
+- アプリを1つ増やすたびに `vite.config.js` の `rollupOptions.input` と
+  `src/home/Home.jsx` の `APPS` に1行ずつ足す。ルーターは入れていない。
 - ブレークポイントは iPad mini 基準。縦(744px)で 4 列、横(1133px)で 5 列になるよう
   `--breakpoint-md` を 44rem に下げてある。数字を触るときはこの前提を壊さないこと。
 - `vite.config.js` の `base` は Pages のパス。ここを変えると公開先で 404 になる。
-- `prefers-reduced-motion` を尊重すること（`src/index.css` に既に入っている）。
+- `prefers-reduced-motion` を尊重すること（`src/shared/index.css` に既に入っている）。
 - タップ対象は最低 44px。`user-select: none` と `-webkit-tap-highlight-color: transparent`
   を維持し、長押しでテキスト選択やコンテキストメニューが出ないようにする。
 

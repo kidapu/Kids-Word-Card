@@ -1,8 +1,8 @@
 import { useCallback, useEffect, useRef, useState } from "react";
-import { CARDS, shuffle } from "../cards.js";
-import { burst } from "../burst.js";
-import { ding, buzz } from "../sfx.js";
-import { LOCALE, other, wordOf } from "../lang.js";
+import { CARDS, shuffle, wordOf } from "../cards.js";
+import { burst } from "../../shared/burst.js";
+import { ding, buzz } from "../../shared/sfx.js";
+import { LOCALE, other } from "../../shared/lang.js";
 import { Card } from "./Card.jsx";
 
 const CHOICES = 3;

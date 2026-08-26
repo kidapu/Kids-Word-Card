@@ -110,3 +110,6 @@ export const CARDS = [
 ];
 
 export const shuffle = a => a.map(v => [Math.random(), v]).sort((x,y) => x[0]-y[0]).map(v => v[1]);
+
+/** そのカードを lang（"en" | "ja"）で読ませるときの文字列 */
+export const wordOf = (card, lang) => (lang === "ja" ? card.ja : card.en);

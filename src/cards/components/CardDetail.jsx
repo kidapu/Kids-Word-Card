@@ -1,6 +1,6 @@
 import { useCallback, useEffect } from "react";
-import { TINT } from "../cards.js";
-import { LOCALE, other, wordOf } from "../lang.js";
+import { TINT, wordOf } from "../cards.js";
+import { LOCALE, other } from "../../shared/lang.js";
 
 /** カードを拡大する画面。lang → もう一方のことば の順で続けて鳴らす。 */
 export function CardDetail({ card, lang, talking, onSayAll, onClose }) {
