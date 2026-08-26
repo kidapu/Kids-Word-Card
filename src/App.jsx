@@ -12,7 +12,7 @@ export default function App() {
   const [lang, setLang] = useState("en");   // 先に鳴らすことば
   const [order, setOrder] = useState(ORDER);
   const [seed, setSeed] = useState(0);
-  const { speak, stop, talking } = useSpeech();
+  const { speak, speakAll, stop, talking } = useSpeech();
 
   const doShuffle = useCallback(() => {
     pip();
@@ -58,7 +58,7 @@ export default function App() {
         {mode === "book" ? (
           <BookMode
             order={order} seed={seed} lang={lang}
-            speak={speak} stop={stop} talking={talking}
+            speakAll={speakAll} stop={stop} talking={talking}
           />
         ) : (
           <QuizMode lang={lang} speak={speak} talking={talking} />

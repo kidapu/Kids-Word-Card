@@ -15,8 +15,18 @@ function pickVoice(lang) {
       || voices.find(v => v.lang.startsWith(head));
 }
 
+function utter(text, lang) {
+  const u = new SpeechSynthesisUtterance(text);
+  u.lang = lang;
+  const v = pickVoice(lang);
+  if (v) u.voice = v;
+  u.rate = lang.startsWith("en") ? 0.85 : 1;
+  u.pitch = 1.1;
+  return u;
+}
+
 /**
- * 読み上げを1つだけ再生する。talking は喋っている間だけ true。
+ * 読み上げ。talking は喋っている間だけ true。
  * 音声は将来 mp3 に差し替える想定なので、呼び出し側はこのフックだけ見ればいい。
  */
 export function useSpeech() {
@@ -28,22 +38,25 @@ export function useSpeech() {
     setTalking(false);
   }, []);
 
-  const speak = useCallback((text, lang) => {
-    if (!supported) return;
+  /** [{ text, lang }, ...] を順に読む。積むだけで続けて鳴る。 */
+  const speakAll = useCallback(items => {
+    if (!supported || !items.length) return;
     window.speechSynthesis.cancel();
-    const u = new SpeechSynthesisUtterance(text);
-    u.lang = lang;
-    const v = pickVoice(lang);
-    if (v) u.voice = v;
-    u.rate = lang.startsWith("en") ? 0.85 : 1;
-    u.pitch = 1.1;
-    u.onstart = () => setTalking(true);
-    u.onend = u.onerror = () => setTalking(false);
-    window.speechSynthesis.speak(u);
+    items.forEach((it, i) => {
+      const u = utter(it.text, it.lang);
+      if (i === 0) u.onstart = () => setTalking(true);
+      if (i === items.length - 1) u.onend = u.onerror = () => setTalking(false);
+      window.speechSynthesis.speak(u);
+    });
   }, []);
+
+  const speak = useCallback(
+    (text, lang) => speakAll([{ text, lang }]),
+    [speakAll]
+  );
 
   // 画面から消えるときに喋りかけを止める
   useEffect(() => stop, [stop]);
 
-  return { speak, stop, talking };
+  return { speak, speakAll, stop, talking };
 }

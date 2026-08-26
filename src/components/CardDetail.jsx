@@ -1,15 +1,20 @@
-import { useEffect } from "react";
+import { useCallback, useEffect } from "react";
 import { TINT } from "../cards.js";
 import { LOCALE, other, wordOf } from "../lang.js";
 
-const BUTTON_LABEL = { en: "🔊 English", ja: "🔊 にほんご" };
-
-/** カードを拡大して、2つのことばを聞き分ける画面。lang の方を先に鳴らす。 */
-export function CardDetail({ card, lang, talking, onSay, onClose }) {
+/** カードを拡大する画面。lang → もう一方のことば の順で続けて鳴らす。 */
+export function CardDetail({ card, lang, talking, onSayAll, onClose }) {
   const second = other(lang);
 
-  // 開いたら、先に鳴らすことばを自動で1回鳴らす
-  useEffect(() => { onSay(wordOf(card, lang), LOCALE[lang]); }, [card, lang, onSay]);
+  const sayBoth = useCallback(() => {
+    onSayAll([
+      { text: wordOf(card, lang),   lang: LOCALE[lang] },
+      { text: wordOf(card, second), lang: LOCALE[second] },
+    ]);
+  }, [card, lang, second, onSayAll]);
+
+  // 開いたら自動で1回鳴らす
+  useEffect(() => { sayBoth(); }, [sayBoth]);
 
   useEffect(() => {
     const onKey = e => { if (e.key === "Escape") onClose(); };
@@ -51,20 +56,9 @@ export function CardDetail({ card, lang, talking, onSay, onClose }) {
         <div className="mt-2.5 mb-0.5 text-[32px] font-extrabold">{wordOf(card, lang)}</div>
         <div className="mb-6 text-base font-bold text-ink-soft">{wordOf(card, second)}</div>
 
-        <div className="flex gap-3">
-          <SayButton
-            onClick={() => onSay(wordOf(card, lang), LOCALE[lang])}
-            className="bg-[var(--tint)]"
-          >
-            {BUTTON_LABEL[lang]}
-          </SayButton>
-          <SayButton
-            onClick={() => onSay(wordOf(card, second), LOCALE[second])}
-            className="bg-ink"
-          >
-            {BUTTON_LABEL[second]}
-          </SayButton>
-        </div>
+        <SayButton onClick={sayBoth} className="w-full bg-[var(--tint)]">
+          🔊 もういっかい
+        </SayButton>
       </div>
     </div>
   );
@@ -76,7 +70,7 @@ function SayButton({ onClick, className, children }) {
       type="button"
       onClick={onClick}
       className={
-        "flex-1 cursor-pointer rounded-[18px] border-0 px-2 py-[17px] font-round text-base " +
+        "cursor-pointer rounded-[18px] border-0 px-2 py-[19px] font-round text-lg " +
         "font-extrabold text-white shadow-[0_5px_0_rgba(0,0,0,.22)] " +
         "transition-[transform,box-shadow] duration-100 " +
         "active:translate-y-1 active:shadow-[0_1px_0_rgba(0,0,0,.22)] " + className
