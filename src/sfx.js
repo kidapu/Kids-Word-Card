@@ -50,6 +50,14 @@ export function ding() {
   tone(ac, { freq: 987.8,  at: 0.16, dur: 0.6  });  // ポン（B5）
 }
 
+/** メニューを押したときの合図。反応したことが分かればいいので、短く軽く。 */
+export function pip() {
+  const ac = audio();
+  if (!ac) return;
+  tone(ac, { freq: 1046.5, dur: 0.11, gain: VOLUME * 0.5 });        // C6
+  tone(ac, { freq: 2093,   dur: 0.09, gain: VOLUME * 0.14 });       // 倍音をすこし
+}
+
 /** 不正解：ブー（低い音がすこし下がる） */
 export function buzz() {
   const ac = audio();

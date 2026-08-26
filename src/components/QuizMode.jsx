@@ -79,7 +79,7 @@ export function QuizMode({ lang, speak, talking }) {
             key={i}
             card={CARDS[i]}
             lang={lang}
-            hidePrimary
+            hideSecondary
             artClassName="text-[clamp(56px,15vw,132px)]"
             onClick={e => answer(i, e.currentTarget)}
             className={

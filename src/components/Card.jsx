@@ -2,10 +2,10 @@ import { TINT } from "../cards.js";
 
 /**
  * カード1枚。lang は「先に鳴らすことば」で、そちらを大きく出す。
- * hidePrimary を渡すと大きい方の文字を隠す（クイズで絵と音だけで当てさせる）。
+ * hideSecondary を渡すと小さい方の文字を隠す（クイズでは出題したことばだけ見せる）。
  * delay は「シャッフル後に順番に配られる」演出のためのもの。
  */
-export function Card({ card, lang = "en", onClick, hidePrimary = false, delay = 0,
+export function Card({ card, lang = "en", onClick, hideSecondary = false, delay = 0,
                        className = "", artClassName = "text-[clamp(46px,11vw,72px)]", ...rest }) {
   const primary = lang === "ja" ? card.ja : card.en;
   const secondary = lang === "ja" ? card.en : card.ja;
@@ -25,10 +25,10 @@ export function Card({ card, lang = "en", onClick, hidePrimary = false, delay = 
       <span className={artClassName + " leading-none [filter:drop-shadow(0_3px_4px_rgba(0,0,0,.12))]"}>
         {card.art}
       </span>
-      {!hidePrimary && (
-        <span className="text-[17px] font-extrabold tracking-[.01em]">{primary}</span>
+      <span className="text-[17px] font-extrabold tracking-[.01em]">{primary}</span>
+      {!hideSecondary && (
+        <span className="text-xs font-bold text-ink-soft">{secondary}</span>
       )}
-      <span className="text-xs font-bold text-ink-soft">{secondary}</span>
     </button>
   );
 }

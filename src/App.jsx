@@ -1,6 +1,7 @@
 import { useCallback, useState } from "react";
 import { CARDS, shuffle } from "./cards.js";
 import { useSpeech } from "./useSpeech.js";
+import { pip } from "./sfx.js";
 import { BookMode } from "./components/BookMode.jsx";
 import { QuizMode } from "./components/QuizMode.jsx";
 
@@ -14,13 +15,14 @@ export default function App() {
   const { speak, stop, talking } = useSpeech();
 
   const doShuffle = useCallback(() => {
+    pip();
     stop();
     setOrder(o => shuffle(o));
     setSeed(s => s + 1);
   }, [stop]);
 
-  const switchMode = next => { stop(); setMode(next); };
-  const switchLang = next => { stop(); setLang(next); };
+  const switchMode = next => { pip(); stop(); setMode(next); };
+  const switchLang = next => { pip(); stop(); setLang(next); };
 
   return (
     <div className="mx-auto max-w-[68rem] px-4 pb-14 md:px-6">
