@@ -1,0 +1,77 @@
+@import "tailwindcss";
+
+@theme {
+  /* iPad mini を基準にしたブレークポイント。
+     縦(744px) で 4 列、横(1133px) で 5 列になる。 */
+  --breakpoint-sm: 35rem;   /* 560px  大きめのスマホ  → 3 列 */
+  --breakpoint-md: 44rem;   /* 704px  iPad mini 縦    → 4 列 */
+  --breakpoint-lg: 64rem;   /* 1024px iPad mini 横    → 5 列 */
+
+  --color-paper: #E4EDF1;
+  --color-paper-soft: #F4F9FA;
+  --color-ink: #26302F;
+  --color-ink-soft: #6C7C7E;
+
+  --color-red: #E4543C;
+  --color-yellow: #F0AF35;
+  --color-green: #43A87A;
+  --color-blue: #3C82BE;
+  --color-purple: #8467AC;
+
+  --font-round: "Hiragino Maru Gothic ProN", "ヒラギノ丸ゴ ProN", "Zen Maru Gothic",
+                "Rounded Mplus 1c", "Segoe UI", system-ui, sans-serif;
+
+  --animate-deal: deal .38s cubic-bezier(.2,1.5,.4,1) both;
+  --animate-pop: pop .34s cubic-bezier(.2,1.5,.4,1);
+  --animate-fade: fade .18s ease;
+  --animate-wobble: wobble .5s ease infinite;
+  --animate-nope: nope .4s ease;
+  --animate-yay: yay .5s cubic-bezier(.2,1.6,.4,1);
+}
+
+@keyframes deal   {from{transform:scale(.8) translateY(14px);opacity:0} to{transform:none;opacity:1}}
+@keyframes pop    {from{transform:scale(.72) translateY(24px);opacity:0} to{transform:none;opacity:1}}
+@keyframes fade   {from{opacity:0} to{opacity:1}}
+@keyframes wobble {0%,100%{transform:rotate(-3deg) scale(1.03)} 50%{transform:rotate(3deg) scale(1.08)}}
+@keyframes nope   {0%,100%{transform:translateX(0)} 25%{transform:translateX(-9px)} 75%{transform:translateX(9px)}}
+@keyframes yay    {0%{transform:scale(1)} 45%{transform:scale(1.14) rotate(-4deg)} 100%{transform:scale(1)}}
+@keyframes fly    {to{transform:translate(var(--dx),var(--dy)) rotate(var(--rot));opacity:0}}
+
+html, body, #root { height: 100%; }
+
+body {
+  margin: 0;
+  font-family: var(--font-round);
+  color: var(--color-ink);
+  background:
+    radial-gradient(circle at 12% 8%, #FFFFFF 0%, transparent 42%),
+    radial-gradient(circle at 88% 92%, #FFFFFF 0%, transparent 46%),
+    var(--color-paper);
+  background-attachment: fixed;
+  padding: env(safe-area-inset-top) env(safe-area-inset-right)
+           env(safe-area-inset-bottom) env(safe-area-inset-left);
+  overflow-x: hidden;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+* { -webkit-tap-highlight-color: transparent; }
+
+/* 押すと沈むボタン。--tint に色を渡して使う。 */
+@utility pressable {
+  box-shadow: 0 7px 0 var(--tint, #999), 0 12px 20px rgba(20,40,50,.14);
+  transition: transform .09s ease, box-shadow .09s ease;
+  &:active {
+    transform: translateY(6px);
+    box-shadow: 0 1px 0 var(--tint, #999), 0 4px 10px rgba(20,40,50,.14);
+  }
+  &:focus-visible { outline: 4px solid var(--color-ink); outline-offset: 4px; }
+}
+
+/* 正解したときの紙吹雪。React の外で DOM を直接足している。 */
+.burst { position: fixed; inset: 0; pointer-events: none; z-index: 30; }
+.burst span { position: absolute; font-size: 26px; animation: fly .9s ease-out forwards; }
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation: none !important; transition: none !important; }
+}
