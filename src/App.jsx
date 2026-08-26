@@ -48,7 +48,7 @@ export default function App() {
                    md:-mx-6 md:gap-3 md:px-6 md:py-4"
       >
         {/* 先に鳴らすことば。どのモードでも左上の定位置に置く */}
-        <Pills className="border border-ink">
+        <Pills>
           <Pill on={lang === "en"} onClick={() => switchLang("en")} label="えいごから">ABC</Pill>
           <Pill on={lang === "ja"} onClick={() => switchLang("ja")} label="にほんごから">あいう</Pill>
         </Pills>
@@ -101,7 +101,7 @@ function Tool({ onClick, children }) {
 
 function Pills({ className = "", children }) {
   return (
-    <div className={"flex shrink-0 gap-0.5 rounded-full bg-white/70 p-1 " + className}>{children}</div>
+    <div className={"flex shrink-0 gap-0.5 rounded-full border border-ink bg-white/70 p-1 " + className}>{children}</div>
   );
 }
 
