@@ -26,7 +26,12 @@ export default function App() {
 
   return (
     <div className="mx-auto max-w-[68rem] px-4 pb-14 md:px-6">
-      <header className="flex items-center gap-2 py-3 md:gap-3 md:py-4">
+      {/* スクロールしても出しっぱなしにする。カードが透けて見えるよう半透明 + ぼかし */}
+      <header
+        className="sticky top-0 z-10 -mx-4 flex items-center gap-2 bg-paper/80 px-4 py-3
+                   backdrop-blur-md shadow-[0_2px_14px_rgba(20,40,50,.07)]
+                   md:-mx-6 md:gap-3 md:px-6 md:py-4"
+      >
         {mode === "book" ? (
           <button
             type="button"
