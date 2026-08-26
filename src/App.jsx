@@ -47,6 +47,12 @@ export default function App() {
                    backdrop-blur-md shadow-[0_2px_14px_rgba(20,40,50,.07)]
                    md:-mx-6 md:gap-3 md:px-6 md:py-4"
       >
+        {/* 先に鳴らすことば。どのモードでも左上の定位置に置く */}
+        <Pills className="border border-ink">
+          <Pill on={lang === "en"} onClick={() => switchLang("en")} label="えいごから">ABC</Pill>
+          <Pill on={lang === "ja"} onClick={() => switchLang("ja")} label="にほんごから">あいう</Pill>
+        </Pills>
+
         {mode === "book" && (
           <>
             <Tool onClick={() => sortBy("shuffle")}>
@@ -57,12 +63,6 @@ export default function App() {
             </Tool>
           </>
         )}
-
-        {/* 先に鳴らすことば。ABC = えいごから、あいう = にほんごから */}
-        <Pills className={mode === "book" ? "" : "mr-auto"}>
-          <Pill on={lang === "en"} onClick={() => switchLang("en")} label="えいごから">ABC</Pill>
-          <Pill on={lang === "ja"} onClick={() => switchLang("ja")} label="にほんごから">あいう</Pill>
-        </Pills>
 
         <Pills className="ml-auto">
           <Pill on={mode === "book"} onClick={() => switchMode("book")}>ずかん</Pill>
