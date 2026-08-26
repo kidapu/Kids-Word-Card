@@ -5,21 +5,36 @@ import { pip } from "./sfx.js";
 import { BookMode } from "./components/BookMode.jsx";
 import { QuizMode } from "./components/QuizMode.jsx";
 
+// cards.js の並び順そのまま = カテゴリ順（どうぶつ → たべもの → …）
 const ORDER = CARDS.map((_, i) => i);
+
+// 下に行くほど巡りを足していく。際限なく増えないための歯止め。
+const MAX_PAGES = 30;
 
 export default function App() {
   const [mode, setMode] = useState("book");
-  const [lang, setLang] = useState("en");   // 先に鳴らすことば
-  const [order, setOrder] = useState(ORDER);
+  const [lang, setLang] = useState("en");     // 先に鳴らすことば
+  const [sort, setSort] = useState("category");
+  const [pages, setPages] = useState([ORDER]);
   const [seed, setSeed] = useState(0);
   const { speak, speakAll, stop, talking } = useSpeech();
 
-  const doShuffle = useCallback(() => {
+  const pageFor = s => (s === "shuffle" ? shuffle(ORDER) : ORDER);
+
+  /** 並べ替えて先頭から配り直す */
+  const sortBy = next => {
     pip();
     stop();
-    setOrder(o => shuffle(o));
+    setSort(next);
+    setPages([pageFor(next)]);
     setSeed(s => s + 1);
-  }, [stop]);
+    window.scrollTo({ top: 0 });
+  };
+
+  /** 下端が近づいたときに、いまの並び方で次の巡りを足す */
+  const addPage = useCallback(() => {
+    setPages(p => (p.length >= MAX_PAGES ? p : [...p, pageFor(sort)]));
+  }, [sort]);
 
   const switchMode = next => { pip(); stop(); setMode(next); };
   const switchLang = next => { pip(); stop(); setLang(next); };
@@ -32,23 +47,19 @@ export default function App() {
                    backdrop-blur-md shadow-[0_2px_14px_rgba(20,40,50,.07)]
                    md:-mx-6 md:gap-3 md:px-6 md:py-4"
       >
-        {mode === "book" ? (
-          <button
-            type="button"
-            onClick={doShuffle}
-            className="cursor-pointer rounded-full border-0 bg-white/70 px-4 py-2.5 font-round
-                       text-sm font-extrabold text-ink shadow-[0_3px_0_rgba(20,40,50,.12)]
-                       transition-[transform,box-shadow] duration-100
-                       active:translate-y-0.5 active:shadow-none md:px-5 md:text-base"
-          >
-            🔀<span className="hidden sm:inline"> シャッフル</span>
-          </button>
-        ) : (
-          <span />
+        {mode === "book" && (
+          <>
+            <Tool onClick={() => sortBy("shuffle")}>
+              🔀<span className="hidden sm:inline"> シャッフル</span>
+            </Tool>
+            <Tool onClick={() => sortBy("category")}>
+              🗂<span className="hidden sm:inline"> カテゴリ</span>
+            </Tool>
+          </>
         )}
 
         {/* 先に鳴らすことば。ABC = えいごから、あいう = にほんごから */}
-        <Pills>
+        <Pills className={mode === "book" ? "" : "mr-auto"}>
           <Pill on={lang === "en"} onClick={() => switchLang("en")} label="えいごから">ABC</Pill>
           <Pill on={lang === "ja"} onClick={() => switchLang("ja")} label="にほんごから">あいう</Pill>
         </Pills>
@@ -62,7 +73,7 @@ export default function App() {
       <main>
         {mode === "book" ? (
           <BookMode
-            order={order} seed={seed} lang={lang}
+            pages={pages} onNeedMore={addPage} seed={seed} lang={lang}
             speakAll={speakAll} stop={stop} talking={talking}
           />
         ) : (
@@ -73,9 +84,24 @@ export default function App() {
   );
 }
 
+function Tool({ onClick, children }) {
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      className="shrink-0 cursor-pointer rounded-full border-0 bg-white/70 px-4 py-2.5 font-round
+                 text-sm font-extrabold text-ink shadow-[0_3px_0_rgba(20,40,50,.12)]
+                 transition-[transform,box-shadow] duration-100
+                 active:translate-y-0.5 active:shadow-none md:px-5 md:text-base"
+    >
+      {children}
+    </button>
+  );
+}
+
 function Pills({ className = "", children }) {
   return (
-    <div className={"flex gap-0.5 rounded-full bg-white/70 p-1 " + className}>{children}</div>
+    <div className={"flex shrink-0 gap-0.5 rounded-full bg-white/70 p-1 " + className}>{children}</div>
   );
 }
 
