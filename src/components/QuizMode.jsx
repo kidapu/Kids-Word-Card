@@ -2,7 +2,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { CARDS, shuffle } from "../cards.js";
 import { burst } from "../burst.js";
 import { ding, buzz } from "../sfx.js";
-import { LOCALE, wordOf } from "../lang.js";
+import { LOCALE, other, wordOf } from "../lang.js";
 import { Card } from "./Card.jsx";
 
 const CHOICES = 3;
@@ -44,9 +44,10 @@ export function QuizMode({ lang, speak, talking }) {
       locked.current = true;
       ding();
       burst(el);
-      // ピンポンが鳴り終わってから読み上げる
-      later(() => speak(wordOf(CARDS[i], lang), LOCALE[lang]), 600);
-      later(() => setRound(newRound()), 1900);
+      // ピンポンが鳴り終わってから、出題とは逆のことばで答えを返す
+      const answerLang = other(lang);
+      later(() => speak(wordOf(CARDS[i], answerLang), LOCALE[answerLang]), 600);
+      later(() => setRound(newRound()), 2100);
     } else {
       buzz();
       later(() => setMark(null), 400);

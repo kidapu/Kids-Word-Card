@@ -33,8 +33,8 @@ export function CardDetail({ card, lang, talking, onSay, onClose }) {
           type="button"
           onClick={onClose}
           aria-label="とじる"
-          className="absolute -top-3.5 -right-2 h-11 w-11 cursor-pointer rounded-full border-0
-                     bg-white text-xl font-extrabold text-ink shadow-[0_4px_12px_rgba(0,0,0,.25)]"
+          className="absolute -top-6 -right-4 h-22 w-22 cursor-pointer rounded-full border-0
+                     bg-white text-4xl font-extrabold text-ink shadow-[0_5px_16px_rgba(0,0,0,.28)]"
         >
           ✕
         </button>
