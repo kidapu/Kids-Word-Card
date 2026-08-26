@@ -33,11 +33,14 @@ const KANA_ROWS = [
 
 /**
  * 読ませ方が文字と違うものだけ書いておく。
- * ひらがなを1文字だけ渡すと読み飛ばされることがあるので、読み仮名で補う。
+ * - ひらがなを1文字だけ渡すと読み飛ばされることがあるので、読み仮名で補う。
+ * - アルファベットは大文字のまま渡すと iOS が「Capital A」と読んでしまうため、
+ *   読み上げには小文字を使う（表示は大文字のまま）。
+ *   小文字にすると単語として読まれてしまうものだけ、ここに綴りを書く。
  */
 const SAY = {
   ja: { "を": "お", "ん": "ンー" },
-  en: {},
+  en: { A: "ay", I: "eye" },
 };
 
 export const SETS = {
@@ -45,8 +48,9 @@ export const SETS = {
   ja: { rows: KANA_ROWS,     label: "ひらがな" },
 };
 
-/** 表示は文字そのまま、読み上げだけ SAY で差し替える */
-export const sayOf = (letter, kind) => SAY[kind][letter] ?? letter;
+/** 表示は文字そのまま、読み上げだけ差し替える */
+export const sayOf = (letter, kind) =>
+  SAY[kind][letter] ?? (kind === "en" ? letter.toLowerCase() : letter);
 
 /** 行構造を平らにして、行番号（＝色）を添える */
 export const flatten = kind =>
