@@ -141,6 +141,10 @@ Web Speech API は iOS で声の種類が端末依存になり、日本語と英
   `--breakpoint-md` を 44rem に下げてある。数字を触るときはこの前提を壊さないこと。
 - `vite.config.js` の `base` は Pages のパス。ここを変えると公開先で 404 になる。
 - `prefers-reduced-motion` を尊重すること（`src/shared/index.css` に既に入っている）。
+- クイズの `setTimeout` は、問題が変わるたびに**全部捨てる**こと。
+  前の問題のタイマー（特に読み上げが返ってこないとき用の 6 秒の保険）が残っていると、
+  次の問題の読み上げ中に発火して問題を飛ばす。速く連続で正解したときだけ起きるので
+  気づきにくい。
 - タップ対象は最低 44px。`user-select: none` と `-webkit-tap-highlight-color: transparent`
   を維持し、長押しでテキスト選択やコンテキストメニューが出ないようにする。
 

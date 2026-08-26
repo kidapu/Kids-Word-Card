@@ -32,8 +32,11 @@ export function LetterQuiz({ kind, speak, talking }) {
   // もじの種類を変えたら出し直す
   useEffect(() => { setRound(newRound(kind)); setScore({ hit: 0, tries: 0 }); }, [kind]);
 
-  // 問題が変わったら、少し置いてから読み上げる
+  // 問題が変わったら、少し置いてから読み上げる。
+  // 前の問題のタイマーが残っていると次の問題を飛ばしてしまうので、ここで捨てる。
   useEffect(() => {
+    timers.current.forEach(clearTimeout);
+    timers.current = [];
     locked.current = false;
     setMark(null);
     const t = setTimeout(() => say(round), 250);

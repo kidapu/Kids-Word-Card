@@ -25,8 +25,12 @@ export function QuizMode({ lang, speak, speakAll, talking }) {
     timers.current.push(setTimeout(fn, ms));
   }, []);
 
-  // 問題が変わったら、少し置いてから読み上げる
+  // 問題が変わったら、少し置いてから読み上げる。
+  // 前の問題のタイマー（読み上げ待ちや保険）が残っていると、次の問題を
+  // 飛ばしてしまうので、ここで必ず捨てる。
   useEffect(() => {
+    timers.current.forEach(clearTimeout);
+    timers.current = [];
     locked.current = false;
     setMark(null);
     const t = setTimeout(() => speak(wordOf(CARDS[round.target], lang), LOCALE[lang]), 250);
