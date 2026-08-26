@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { CARDS, shuffle } from "../cards.js";
 import { burst } from "../burst.js";
+import { ding, buzz } from "../sfx.js";
 import { Card } from "./Card.jsx";
 
 const CHOICES = 3;
@@ -40,10 +41,13 @@ export function QuizMode({ speak, talking }) {
 
     if (ok) {
       locked.current = true;
+      ding();
       burst(el);
-      speak(CARDS[i].en, "en-US");
-      later(() => setRound(newRound()), 1300);
+      // ピンポンが鳴り終わってから読み上げる
+      later(() => speak(CARDS[i].en, "en-US"), 600);
+      later(() => setRound(newRound()), 1900);
     } else {
+      buzz();
       later(() => setMark(null), 400);
     }
   };
