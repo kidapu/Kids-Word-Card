@@ -73,7 +73,7 @@ export default function App() {
       {mode === "book" ? (
         <BookMode
           pages={pages} onNeedMore={addPage} seed={seed} lang={lang}
-          speakAll={speakAll} stop={stop} talking={talking}
+          speakAll={speakAll}
         />
       ) : (
         <QuizMode lang={lang} speak={speak} speakAll={speakAll} talking={talking} />

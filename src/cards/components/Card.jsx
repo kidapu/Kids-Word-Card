@@ -5,7 +5,7 @@ import { TINT } from "../cards.js";
  * hideSecondary を渡すと小さい方の文字を隠す（クイズでは出題したことばだけ見せる）。
  * delay は「シャッフル後に順番に配られる」演出のためのもの。
  */
-export function Card({ card, lang = "en", onClick, hideSecondary = false, delay = 0,
+export function Card({ card, lang = "en", onClick, hideSecondary = false, talking = false, delay = 0,
                        className = "", artClassName = "text-[clamp(46px,11vw,72px)]", ...rest }) {
   const primary = lang === "ja" ? card.ja : card.en;
   const secondary = lang === "ja" ? card.en : card.ja;
@@ -22,7 +22,10 @@ export function Card({ card, lang = "en", onClick, hideSecondary = false, delay 
       }
       {...rest}
     >
-      <span className={artClassName + " leading-none [filter:drop-shadow(0_3px_4px_rgba(0,0,0,.12))]"}>
+      <span
+        className={artClassName + " leading-none [filter:drop-shadow(0_3px_4px_rgba(0,0,0,.12))] " +
+                   (talking ? "animate-wobble" : "")}
+      >
         {card.art}
       </span>
       <span className="text-[17px] font-extrabold tracking-[.01em]">{primary}</span>
