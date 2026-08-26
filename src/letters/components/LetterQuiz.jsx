@@ -63,6 +63,8 @@ export function LetterQuiz({ kind, speak, talking }) {
       later(() => { if (alive.current) setRound(newRound(kind)); }, 2000);
     } else {
       buzz();
+      // ブーのあと、押したもじを読んで教える
+      later(() => speak(sayOf(round.pick[at].letter, kind), LOCALE[kind]), 520);
       later(() => setMark(null), 400);
     }
   };

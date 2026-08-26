@@ -67,6 +67,8 @@ export function QuizMode({ lang, speak, speakAll, talking }) {
       later(() => { if (alive.current && locked.current) setRound(newRound()); }, 6000);
     } else {
       buzz();
+      // ブーのあと、押したカードが何なのかを教える
+      later(() => speak(wordOf(CARDS[i], lang), LOCALE[lang]), 520);
       later(() => setMark(null), 400);
     }
   };
