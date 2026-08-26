@@ -1,10 +1,15 @@
 import { useEffect } from "react";
 import { TINT } from "../cards.js";
+import { LOCALE, other, wordOf } from "../lang.js";
 
-/** カードを拡大して、英語 / にほんご を聞き分ける画面。 */
-export function CardDetail({ card, talking, onSay, onClose }) {
-  // 開いたら英語を自動で1回鳴らす
-  useEffect(() => { onSay(card.en, "en-US"); }, [card, onSay]);
+const BUTTON_LABEL = { en: "🔊 English", ja: "🔊 にほんご" };
+
+/** カードを拡大して、2つのことばを聞き分ける画面。lang の方を先に鳴らす。 */
+export function CardDetail({ card, lang, talking, onSay, onClose }) {
+  const second = other(lang);
+
+  // 開いたら、先に鳴らすことばを自動で1回鳴らす
+  useEffect(() => { onSay(wordOf(card, lang), LOCALE[lang]); }, [card, lang, onSay]);
 
   useEffect(() => {
     const onKey = e => { if (e.key === "Escape") onClose(); };
@@ -43,15 +48,21 @@ export function CardDetail({ card, talking, onSay, onClose }) {
         >
           {card.art}
         </div>
-        <div className="mt-2.5 mb-0.5 text-[32px] font-extrabold">{card.en}</div>
-        <div className="mb-6 text-base font-bold text-ink-soft">{card.ja}</div>
+        <div className="mt-2.5 mb-0.5 text-[32px] font-extrabold">{wordOf(card, lang)}</div>
+        <div className="mb-6 text-base font-bold text-ink-soft">{wordOf(card, second)}</div>
 
         <div className="flex gap-3">
-          <SayButton onClick={() => onSay(card.en, "en-US")} className="bg-[var(--tint)]">
-            🔊 English
+          <SayButton
+            onClick={() => onSay(wordOf(card, lang), LOCALE[lang])}
+            className="bg-[var(--tint)]"
+          >
+            {BUTTON_LABEL[lang]}
           </SayButton>
-          <SayButton onClick={() => onSay(card.ja, "ja-JP")} className="bg-ink">
-            🔊 にほんご
+          <SayButton
+            onClick={() => onSay(wordOf(card, second), LOCALE[second])}
+            className="bg-ink"
+          >
+            {BUTTON_LABEL[second]}
           </SayButton>
         </div>
       </div>

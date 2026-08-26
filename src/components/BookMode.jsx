@@ -7,7 +7,7 @@ import { CardDetail } from "./CardDetail.jsx";
  * ずかん。order は App が持っていて、シャッフルボタンで並びが変わる。
  * seed が変わるとグリッドごと作り直されて、カードが配られる演出が走る。
  */
-export function BookMode({ order, seed, speak, stop, talking }) {
+export function BookMode({ order, seed, lang, speak, stop, talking }) {
   const [openIndex, setOpenIndex] = useState(null);
 
   return (
@@ -20,6 +20,7 @@ export function BookMode({ order, seed, speak, stop, talking }) {
           <Card
             key={i}
             card={CARDS[i]}
+            lang={lang}
             onClick={() => setOpenIndex(i)}
             delay={Math.min(pos, 14) * 22}
             className="animate-deal"
@@ -30,6 +31,7 @@ export function BookMode({ order, seed, speak, stop, talking }) {
       {openIndex !== null && (
         <CardDetail
           card={CARDS[openIndex]}
+          lang={lang}
           talking={talking}
           onSay={speak}
           onClose={() => { stop(); setOpenIndex(null); }}

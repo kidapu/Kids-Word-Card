@@ -2,6 +2,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { CARDS, shuffle } from "../cards.js";
 import { burst } from "../burst.js";
 import { ding, buzz } from "../sfx.js";
+import { LOCALE, wordOf } from "../lang.js";
 import { Card } from "./Card.jsx";
 
 const CHOICES = 3;
@@ -12,7 +13,7 @@ const newRound = () => {
 };
 
 /** 英語が流れて、3枚から選ぶ。正解すると紙吹雪が出て次の問題へ。 */
-export function QuizMode({ speak, talking }) {
+export function QuizMode({ lang, speak, talking }) {
   const [round, setRound] = useState(newRound);
   const [score, setScore] = useState({ hit: 0, tries: 0 });
   const [mark, setMark] = useState(null);   // { index, ok }
@@ -27,9 +28,9 @@ export function QuizMode({ speak, talking }) {
   useEffect(() => {
     locked.current = false;
     setMark(null);
-    const t = setTimeout(() => speak(CARDS[round.target].en, "en-US"), 250);
+    const t = setTimeout(() => speak(wordOf(CARDS[round.target], lang), LOCALE[lang]), 250);
     return () => clearTimeout(t);
-  }, [round, speak]);
+  }, [round, lang, speak]);
 
   useEffect(() => () => timers.current.forEach(clearTimeout), []);
 
@@ -44,7 +45,7 @@ export function QuizMode({ speak, talking }) {
       ding();
       burst(el);
       // ピンポンが鳴り終わってから読み上げる
-      later(() => speak(CARDS[i].en, "en-US"), 600);
+      later(() => speak(wordOf(CARDS[i], lang), LOCALE[lang]), 600);
       later(() => setRound(newRound()), 1900);
     } else {
       buzz();
@@ -60,7 +61,7 @@ export function QuizMode({ speak, talking }) {
 
       <button
         type="button"
-        onClick={() => speak(CARDS[round.target].en, "en-US")}
+        onClick={() => speak(wordOf(CARDS[round.target], lang), LOCALE[lang])}
         className={
           "mt-1.5 mb-6 cursor-pointer rounded-full border-0 bg-ink px-8 py-4 font-round " +
           "text-lg font-extrabold text-white shadow-[0_5px_0_rgba(0,0,0,.25)] " +
@@ -77,7 +78,8 @@ export function QuizMode({ speak, talking }) {
           <Card
             key={i}
             card={CARDS[i]}
-            hideEn
+            lang={lang}
+            hidePrimary
             artClassName="text-[clamp(56px,15vw,132px)]"
             onClick={e => answer(i, e.currentTarget)}
             className={
