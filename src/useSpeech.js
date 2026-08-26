@@ -38,14 +38,19 @@ export function useSpeech() {
     setTalking(false);
   }, []);
 
-  /** [{ text, lang }, ...] を順に読む。積むだけで続けて鳴る。 */
-  const speakAll = useCallback(items => {
+  /**
+   * [{ text, lang }, ...] を順に読む。積むだけで続けて鳴る。
+   * onDone は全部読み終わったときに呼ぶ（止めたときにも呼ばれる）。
+   */
+  const speakAll = useCallback((items, onDone) => {
     if (!supported || !items.length) return;
     window.speechSynthesis.cancel();
     items.forEach((it, i) => {
       const u = utter(it.text, it.lang);
       if (i === 0) u.onstart = () => setTalking(true);
-      if (i === items.length - 1) u.onend = u.onerror = () => setTalking(false);
+      if (i === items.length - 1) {
+        u.onend = u.onerror = () => { setTalking(false); onDone?.(); };
+      }
       window.speechSynthesis.speak(u);
     });
   }, []);

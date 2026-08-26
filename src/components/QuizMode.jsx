@@ -13,12 +13,13 @@ const newRound = () => {
 };
 
 /** 英語が流れて、3枚から選ぶ。正解すると紙吹雪が出て次の問題へ。 */
-export function QuizMode({ lang, speak, talking }) {
+export function QuizMode({ lang, speak, speakAll, talking }) {
   const [round, setRound] = useState(newRound);
   const [score, setScore] = useState({ hit: 0, tries: 0 });
   const [mark, setMark] = useState(null);   // { index, ok }
   const locked = useRef(false);
   const timers = useRef([]);
+  const alive = useRef(true);
 
   const later = useCallback((fn, ms) => {
     timers.current.push(setTimeout(fn, ms));
@@ -32,7 +33,13 @@ export function QuizMode({ lang, speak, talking }) {
     return () => clearTimeout(t);
   }, [round, lang, speak]);
 
-  useEffect(() => () => timers.current.forEach(clearTimeout), []);
+  useEffect(() => {
+    alive.current = true;
+    return () => {
+      alive.current = false;
+      timers.current.forEach(clearTimeout);
+    };
+  }, []);
 
   const answer = (i, el) => {
     if (locked.current) return;
@@ -44,10 +51,20 @@ export function QuizMode({ lang, speak, talking }) {
       locked.current = true;
       ding();
       burst(el);
-      // ピンポンが鳴り終わってから、出題とは逆のことばで答えを返す
-      const answerLang = other(lang);
-      later(() => speak(wordOf(CARDS[i], answerLang), LOCALE[answerLang]), 600);
-      later(() => setRound(newRound()), 2100);
+
+      // ピンポンのあと、出題とは逆のことば → 出題したことば の順に答えを返す。
+      // 読み終わってから次の問題に進むので、長いことばでも切れない。
+      const first = other(lang);
+      const words = [
+        { text: wordOf(CARDS[i], first), lang: LOCALE[first] },
+        { text: wordOf(CARDS[i], lang),  lang: LOCALE[lang] },
+      ];
+      later(() => speakAll(words, () => {
+        if (alive.current) later(() => setRound(newRound()), 700);
+      }), 600);
+
+      // 読み上げが返ってこないときの保険（次の問題に入れば locked は false に戻る）
+      later(() => { if (alive.current && locked.current) setRound(newRound()); }, 6000);
     } else {
       buzz();
       later(() => setMark(null), 400);

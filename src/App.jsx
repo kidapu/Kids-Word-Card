@@ -77,7 +77,7 @@ export default function App() {
             speakAll={speakAll} stop={stop} talking={talking}
           />
         ) : (
-          <QuizMode lang={lang} speak={speak} talking={talking} />
+          <QuizMode lang={lang} speak={speak} speakAll={speakAll} talking={talking} />
         )}
       </main>
     </div>
