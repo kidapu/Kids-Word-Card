@@ -6,8 +6,8 @@ export const SIZE = 600;          // 判定に使う面の大きさ（正方形�
 export const FONT_SIZE = 460;     // 文字の大きさ
 export const INK_WIDTH = 46;      // なぞる線の太さ
 
-/** どのくらい塗れたらクリアか */
-const COVER = 0.72;
+/** どのくらい塗れたらクリアか（画面のバーの目印もここに合わせてある） */
+export const COVER = 0.9;
 /** 線のうち、これだけ文字に乗っていること（画面を塗りつぶすだけでは通らないように） */
 const ACCURACY = 0.45;
 
@@ -35,7 +35,7 @@ export function drawLetter(ctx, letter) {
 
 /** なぞった線を1本描き足す（色は判定に関係ない。濃さだけ見ている） */
 export function strokeInk(ctx, from, to) {
-  ctx.strokeStyle = "#3C82BE";
+  ctx.strokeStyle = "#26302F";
   ctx.lineWidth = INK_WIDTH;
   ctx.lineCap = "round";
   ctx.lineJoin = "round";

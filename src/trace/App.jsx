@@ -1,5 +1,6 @@
 import { useMemo, useState } from "react";
 import { SETS } from "../shared/letters.js";
+import { COVER } from "./trace.js";
 import { pip } from "../shared/sfx.js";
 import { Shell, HomeButton, Tool, Pills, Pill } from "../shared/ui.jsx";
 import { TraceBoard } from "./components/TraceBoard.jsx";
@@ -44,10 +45,24 @@ export default function App() {
           onClear={next}
           onProgress={setCover}
         />
-        {/* どのくらい塗れたかの目安。大人が見て調整できるように出している */}
-        <p className="mt-3 text-center font-round text-xs font-bold text-ink-soft">
-          {Math.round(cover * 100)}%
-        </p>
+        {/* どのくらい塗れたか。目印まで伸びたらクリア。 */}
+        <div
+          className="relative mx-auto mt-4 h-4 w-[min(66svh,30rem)] overflow-hidden
+                     rounded-full bg-black/10"
+        >
+          <div
+            className="h-full rounded-full transition-[width,background-color] duration-200"
+            style={{
+              width: `${Math.min(100, cover * 100)}%`,
+              background: cover >= COVER ? "var(--color-green)" : "var(--color-blue)",
+            }}
+          />
+          {/* ここまで塗れたらクリア、という目印 */}
+          <div
+            className="absolute inset-y-0 w-[3px] rounded-full bg-ink/30"
+            style={{ left: `calc(${COVER * 100}% - 1.5px)` }}
+          />
+        </div>
       </div>
     </Shell>
   );
