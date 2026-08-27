@@ -58,3 +58,29 @@ export function* between(a, b) {
     yield { x: a.x + ((b.x - a.x) * s) / steps, y: a.y + ((b.y - a.y) * s) / steps };
   }
 }
+
+/** 足あとの間隔と、道の中心からの左右のずれ */
+const STEP = 7;
+const OFF = 2.6;
+
+/**
+ * なぞった線に沿って、足あとを左右かわりばんこに置く場所を出す。
+ * すでに置いた分は使い回して、続きだけ足す。
+ */
+export function addPrints(prints, from, to, carry, side) {
+  const d = Math.hypot(to.x - from.x, to.y - from.y);
+  let travelled = carry + d;
+  let s = side;
+
+  while (travelled >= STEP && d > 0) {
+    travelled -= STEP;
+    const ang = Math.atan2(to.y - from.y, to.x - from.x);
+    prints.push({
+      x: to.x - Math.sin(ang) * OFF * s,
+      y: to.y + Math.cos(ang) * OFF * s,
+      deg: (ang * 180) / Math.PI + 90,   // 足あとは進む向きに合わせて回す
+    });
+    s = -s;
+  }
+  return { carry: travelled, side: s };
+}

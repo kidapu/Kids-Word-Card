@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import {
   W, H, BAR_H, START, GOAL, HOLE, TINTS,
-  makeLevel, hitsBar, atGoal, atStart, between,
+  makeLevel, hitsBar, atGoal, atStart, between, addPrints,
 } from "../maze.js";
 import { burst } from "../../shared/burst.js";
 import { ding, buzz } from "../../shared/sfx.js";
@@ -13,6 +13,10 @@ import { ding, buzz } from "../../shared/sfx.js";
 export function MazeBoard({ stage, onClear }) {
   const [bars, setBars] = useState(() => makeLevel(stage));
   const [path, setPath] = useState([]);      // 描くためだけの控え
+  const [prints, setPrints] = useState([]);  // うさぎの足あと
+  const trail = useRef([]);
+  const carry = useRef(0);                   // 足あとを置くまでの残り
+  const side = useRef(1);                    // つぎは右足か左足か
   // なぞっている最中の判断は ref で持つ。state だと同じ指の動きの中では
   // 前の値のままなので、ゴール判定が何度も通ってしまう。
   const drawing = useRef(false);
@@ -26,7 +30,11 @@ export function MazeBoard({ stage, onClear }) {
   useEffect(() => {
     setBars(makeLevel(stage));
     points.current = [];
+    trail.current = [];
+    carry.current = 0;
+    side.current = 1;
     setPath([]);
+    setPrints([]);
     drawing.current = false;
     done.current = false;
   }, [stage]);
@@ -45,7 +53,11 @@ export function MazeBoard({ stage, onClear }) {
   const reset = () => {
     drawing.current = false;
     points.current = [];
+    trail.current = [];
+    carry.current = 0;
+    side.current = 1;
     setPath([]);
+    setPrints([]);
   };
 
   const fail = () => {
@@ -68,7 +80,20 @@ export function MazeBoard({ stage, onClear }) {
     try { e.currentTarget.setPointerCapture(e.pointerId); } catch { /* 拾えなくても続けられる */ }
     drawing.current = true;
     points.current = [p];
+    trail.current = [];
+    carry.current = 0;
+    side.current = 1;
     setPath([p]);
+    setPrints([]);
+  };
+
+  /** 点を足しながら、間隔があいたら足あとを置く */
+  const stampTo = p => {
+    const from = points.current[points.current.length - 1];
+    const r = addPrints(trail.current, from, p, carry.current, side.current);
+    carry.current = r.carry;
+    side.current = r.side;
+    points.current.push(p);
   };
 
   const move = e => {
@@ -80,16 +105,18 @@ export function MazeBoard({ stage, onClear }) {
     // 前の点との間を細かく調べる。すり抜けも見逃さない。
     for (const q of between(last, p)) {
       if (atGoal(q)) {
-        points.current.push(q);
+        stampTo(q);
         setPath([...points.current]);
+        setPrints([...trail.current]);
         clear();
         return;
       }
       if (q.x < 0 || q.x > W || q.y < 0 || q.y > H) { fail(); return; }
       if (bars.some(bar => hitsBar(q, bar))) { fail(); return; }
     }
-    points.current.push(p);
+    stampTo(p);
     setPath([...points.current]);
+    setPrints([...trail.current]);
   };
 
   // ゴールまで着かずに指を離したら、静かにやり直し（ブーは鳴らさない）
@@ -127,17 +154,31 @@ export function MazeBoard({ stage, onClear }) {
       <text x={START.x} y={START.y} textAnchor="middle" dominantBaseline="central" fontSize="12">🐰</text>
       <text x={GOAL.x} y={GOAL.y} textAnchor="middle" dominantBaseline="central" fontSize="12">🥕</text>
 
-      {/* なぞった線 */}
+      {/* 通った道。うすいグレーで、足あとの下じきにする */}
       {path.length > 1 && (
         <polyline
           points={path.map(p => `${p.x},${p.y}`).join(" ")}
           fill="none"
-          stroke="var(--color-ink)"
-          strokeWidth="3"
+          stroke="var(--color-ink-soft)"
+          strokeWidth="3.5"
+          strokeOpacity=".28"
           strokeLinecap="round"
           strokeLinejoin="round"
         />
       )}
+
+      {/* うさぎの足あと。左右かわりばんこに、進む向きへ回して置く */}
+      {prints.map((p, i) => (
+        <text
+          key={i}
+          x={p.x} y={p.y}
+          textAnchor="middle" dominantBaseline="central"
+          fontSize="5"
+          transform={`rotate(${p.deg} ${p.x} ${p.y})`}
+        >
+          🐾
+        </text>
+      ))}
     </svg>
   );
 }
