@@ -45,23 +45,30 @@ export default function App() {
           onClear={next}
           onProgress={setCover}
         />
-        {/* どのくらい塗れたか。目印まで伸びたらクリア。 */}
-        <div
-          className="relative mx-auto mt-4 h-4 w-[min(66svh,30rem)] overflow-hidden
-                     rounded-full bg-black/10"
-        >
-          <div
-            className="h-full rounded-full transition-[width,background-color] duration-200"
-            style={{
-              width: `${Math.min(100, cover * 100)}%`,
-              background: cover >= COVER ? "var(--color-green)" : "var(--color-blue)",
-            }}
-          />
-          {/* ここまで塗れたらクリア、という目印 */}
-          <div
-            className="absolute inset-y-0 w-[3px] rounded-full bg-ink/30"
-            style={{ left: `calc(${COVER * 100}% - 1.5px)` }}
-          />
+        {/* どのくらい塗れたか。目印まで伸びたらクリアで、そのあと右端まで伸びる。 */}
+        <div className="mx-auto mt-4 flex w-[min(66svh,30rem)] items-center gap-3">
+          <div className="relative h-4 flex-1 overflow-hidden rounded-full bg-black/10">
+            <div
+              className="h-full rounded-full transition-[width,background-color] duration-[400ms] ease-out"
+              style={{
+                width: `${Math.min(100, cover * 100)}%`,
+                background: cover >= COVER ? "var(--color-red)" : "var(--color-blue)",
+              }}
+            />
+            {/* ここまで塗れたらクリア、という目印 */}
+            <div
+              className="absolute inset-y-0 w-[3px] rounded-full bg-ink/30"
+              style={{ left: `calc(${COVER * 100}% - 1.5px)` }}
+            />
+          </div>
+          <span
+            className={
+              "w-12 text-right font-round text-sm font-extrabold tabular-nums " +
+              (cover >= COVER ? "text-red" : "text-ink-soft")
+            }
+          >
+            {Math.round(cover * 100)}%
+          </span>
         </div>
       </div>
     </Shell>

@@ -18,20 +18,23 @@ export function TraceBoard({ letter, eraseSeed, onClear, onProgress }) {
   const done = useRef(false);
   const last = useRef(null);
   const timer = useRef(null);
+  const fill = useRef(null);
   const [cleared, setCleared] = useState(false);
+  // 描き直しの中でも読むので ref にも持つ。
+  // repaint が cleared に依存すると、クリアのたびに「文字が変わったとき」の
+  // 後始末（線を消す・進み具合を 0 に戻す）が走ってしまう。
+  const clearedRef = useRef(false);
 
   /** 画面の面を描き直す。手本を薄く、その上になぞった線を重ねる。 */
   const repaint = useCallback(() => {
     const ctx = view.current.getContext("2d");
     ctx.clearRect(0, 0, SIZE, SIZE);
 
-    ctx.globalAlpha = cleared ? 0.32 : 0.16;
+    ctx.globalAlpha = clearedRef.current ? 0.32 : 0.16;
     ctx.drawImage(guide.current, 0, 0);
     ctx.globalAlpha = 1;
-
-    // なぞった線は、文字に乗っているところだけ色を変えて見せる
     ctx.drawImage(ink.current, 0, 0);
-  }, [cleared]);
+  }, []);
 
   /** 文字が変わったら、手本を描き直してなぞりを消す */
   useEffect(() => {
@@ -41,12 +44,13 @@ export function TraceBoard({ letter, eraseSeed, onClear, onProgress }) {
     drawing.current = false;
     done.current = false;
     last.current = null;
+    clearedRef.current = false;
     setCleared(false);
     onProgress?.(0);
     repaint();
   }, [letter, repaint, onProgress]);
 
-  useEffect(() => () => clearTimeout(timer.current), []);
+  useEffect(() => () => { clearTimeout(timer.current); clearTimeout(fill.current); }, []);
 
   const erase = useCallback(() => {
     if (done.current) return;
@@ -72,10 +76,14 @@ export function TraceBoard({ letter, eraseSeed, onClear, onProgress }) {
     onProgress?.(m.cover);
     if (m.done && !done.current) {
       done.current = true;
+      clearedRef.current = true;
       setCleared(true);
+      repaint();               // 手本を濃くして見せる
       ding();
       burst(view.current);
-      timer.current = setTimeout(onClear, 1200);
+      // いったん実際の割合を見せてから、バーを右端まで伸ばす
+      fill.current = setTimeout(() => onProgress?.(1), 250);
+      timer.current = setTimeout(onClear, 1400);
     }
   };
 
