@@ -18,6 +18,7 @@ export default defineConfig({
         letters: resolve(root, "letters/index.html"),
         counting: resolve(root, "counting/index.html"),
         colors:   resolve(root, "colors/index.html"),
+        maze:     resolve(root, "maze/index.html"),
       },
     },
   },

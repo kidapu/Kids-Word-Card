@@ -21,6 +21,7 @@ index.html                       アプリをえらぶ画面
 cards/index.html                 おしゃべりカード
 counting/index.html              かずカード
 colors/index.html                いろカード
+maze/index.html                  めいろ
 letters/index.html               もじカード
 
 src/shared/                      アプリ共通
@@ -45,6 +46,9 @@ src/counting/                    かずカード
 src/colors/                      いろカード
   colors.js                        色と、その名前
   components/                      ColorCard / ColorTable / ColorQuiz
+src/maze/                        めいろ
+  maze.js                          盤面の作り方と当たり判定
+  components/                      MazeBoard
 src/letters/                     もじカード
   letters.js                       文字データと読み方の差し替え
   components/                      Letter / LetterTable / LetterQuiz

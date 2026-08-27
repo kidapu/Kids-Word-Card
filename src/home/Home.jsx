@@ -22,6 +22,13 @@ const APPS = [
     tint: "var(--color-purple)",
   },
   {
+    path: "maze/",
+    art: "🐰",
+    name: "めいろ",
+    sub: "ゆびで ゴールまで",
+    tint: "var(--color-yellow)",
+  },
+  {
     path: "letters/",
     art: "🔤",
     name: "もじカード",
