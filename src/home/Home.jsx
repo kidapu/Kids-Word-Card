@@ -29,6 +29,13 @@ const APPS = [
     tint: "var(--color-yellow)",
   },
   {
+    path: "trace/",
+    art: "✏️",
+    name: "なぞりカード",
+    sub: "もじを ゆびで なぞる",
+    tint: "var(--color-green)",
+  },
+  {
     path: "letters/",
     art: "🔤",
     name: "もじカード",

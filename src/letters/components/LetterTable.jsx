@@ -1,5 +1,5 @@
 import { useMemo } from "react";
-import { SETS, flatten, sayOf } from "../letters.js";
+import { SETS, flatten, sayOf } from "../../shared/letters.js";
 import { LOCALE } from "../../shared/lang.js";
 import { shuffle } from "../../shared/shuffle.js";
 import { useSaying } from "../../shared/useSaying.js";

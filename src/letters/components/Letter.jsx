@@ -1,4 +1,4 @@
-import { TINTS } from "../letters.js";
+import { TINTS } from "../../shared/letters.js";
 
 /** もじ1つ。押すと発音する。 */
 export function Letter({ letter, row, onClick, talking = false, delay = 0, className = "", ...rest }) {

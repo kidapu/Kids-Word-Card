@@ -22,6 +22,7 @@ cards/index.html                 おしゃべりカード
 counting/index.html              かずカード
 colors/index.html                いろカード
 maze/index.html                  めいろ
+trace/index.html                 なぞりカード
 letters/index.html               もじカード
 
 src/shared/                      アプリ共通
@@ -34,6 +35,7 @@ src/shared/                      アプリ共通
   sfx.js                           ピンポン / ブー / ピン（Web Audio で合成）
   burst.js                         正解したときの紙吹雪
   lang.js                          en / ja の対応
+  letters.js                       もじのデータ（もじカードとなぞりカードで使う）
   shuffle.js                       並びをばらす
 
 src/home/                        アプリをえらぶ画面
@@ -46,6 +48,9 @@ src/counting/                    かずカード
 src/colors/                      いろカード
   colors.js                        色と、その名前
   components/                      ColorCard / ColorTable / ColorQuiz
+src/trace/                       なぞりカード
+  trace.js                         なぞりの判定（フォントの画素を使う）
+  components/                      TraceBoard
 src/maze/                        めいろ
   maze.js                          盤面の作り方と当たり判定
   components/                      MazeBoard

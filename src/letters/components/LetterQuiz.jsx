@@ -1,5 +1,5 @@
 import { useCallback } from "react";
-import { flatten, sayOf } from "../letters.js";
+import { flatten, sayOf } from "../../shared/letters.js";
 import { LOCALE } from "../../shared/lang.js";
 import { shuffle } from "../../shared/shuffle.js";
 import { useQuiz } from "../../shared/useQuiz.js";

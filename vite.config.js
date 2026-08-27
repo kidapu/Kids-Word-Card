@@ -19,6 +19,7 @@ export default defineConfig({
         counting: resolve(root, "counting/index.html"),
         colors:   resolve(root, "colors/index.html"),
         maze:     resolve(root, "maze/index.html"),
+        trace:    resolve(root, "trace/index.html"),
       },
     },
   },
