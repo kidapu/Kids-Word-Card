@@ -20,6 +20,7 @@ Tailwind は `@tailwindcss/vite` プラグイン方式。設定ファイルは�
 index.html                       アプリをえらぶ画面
 cards/index.html                 おしゃべりカード
 counting/index.html              かずカード
+colors/index.html                いろカード
 letters/index.html               もじカード
 
 src/shared/                      アプリ共通
@@ -37,6 +38,9 @@ src/cards/                       おしゃべりカード
 src/counting/                    かずカード
   counting.js                      数と、数える絵
   components/                      NumberCard / NumberTable / CountQuiz
+src/colors/                      いろカード
+  colors.js                        色と、その名前
+  components/                      ColorCard / ColorTable / ColorQuiz
 src/letters/                     もじカード
   letters.js                       文字データと読み方の差し替え
   components/                      Letter / LetterTable / LetterQuiz
@@ -96,6 +100,12 @@ say -v Samantha "a" -o a.aiff && afinfo a.aiff | grep duration
 ```
 
 大文字は 0.8 秒前後、小文字は 0.3〜0.5 秒なので、「Capital」の有無がすぐ分かる。
+
+## 影と `ring` は共存しない
+
+カードの押し込み（`pressable`）は生の `box-shadow` で書いている。Tailwind の
+`ring-*` も `box-shadow` を使うので、両方つけると **ring が影を打ち消す**。
+縁が必要なときは `border` を使うこと。
 
 ## クイズのタイマー
 

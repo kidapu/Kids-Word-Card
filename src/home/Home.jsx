@@ -15,6 +15,13 @@ const APPS = [
     tint: "var(--color-green)",
   },
   {
+    path: "colors/",
+    art: "🎨",
+    name: "いろカード",
+    sub: "いろの なまえ",
+    tint: "var(--color-purple)",
+  },
+  {
     path: "letters/",
     art: "🔤",
     name: "もじカード",

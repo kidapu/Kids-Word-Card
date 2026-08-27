@@ -17,6 +17,7 @@ export default defineConfig({
         cards:   resolve(root, "cards/index.html"),
         letters: resolve(root, "letters/index.html"),
         counting: resolve(root, "counting/index.html"),
+        colors:   resolve(root, "colors/index.html"),
       },
     },
   },
