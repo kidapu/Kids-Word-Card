@@ -36,6 +36,6 @@ export const sayNumber = (n, lang) => {
 };
 
 /** 「いくつ？」の問いかけ */
-export const ASK = { ja: "いくつ？", en: "How many?" };
+export const ASK = { ja: "これは いくつ？", en: "How many?" };
 
 export const shuffle = a => a.map(v => [Math.random(), v]).sort((x, y) => x[0] - y[0]).map(v => v[1]);

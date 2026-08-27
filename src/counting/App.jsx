@@ -8,7 +8,7 @@ import { CountQuiz } from "./components/CountQuiz.jsx";
 export default function App() {
   const [mode, setMode] = useState("table");
   const [lang, setLang] = useState("en");   // 数を読むことば
-  const { speak, speakAll, talking, stop } = useSpeech();
+  const { speak, speakAll, stop } = useSpeech();
 
   const switchMode = next => { pip(); stop(); setMode(next); };
   const switchLang = next => { pip(); stop(); setLang(next); };
@@ -33,7 +33,7 @@ export default function App() {
       {mode === "table" ? (
         <NumberTable lang={lang} speakAll={speakAll} />
       ) : (
-        <CountQuiz lang={lang} speak={speak} speakAll={speakAll} talking={talking} />
+        <CountQuiz lang={lang} speak={speak} speakAll={speakAll} />
       )}
     </Shell>
   );

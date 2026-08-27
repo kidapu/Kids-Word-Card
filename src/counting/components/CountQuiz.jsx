@@ -18,7 +18,7 @@ const newRound = () => {
 };
 
 /** 絵がいくつ並んでいるかを、3つの数字から選ぶ。 */
-export function CountQuiz({ lang, speak, speakAll, talking }) {
+export function CountQuiz({ lang, speak, speakAll }) {
   const [round, setRound] = useState(newRound);
   const [score, setScore] = useState({ hit: 0, tries: 0 });
   const [mark, setMark] = useState(null);   // { n, ok }
@@ -87,8 +87,8 @@ export function CountQuiz({ lang, speak, speakAll, talking }) {
       </p>
 
       {/* 数える絵。折り返して中央に並べる。
-          高さを決めておくと、個数が変わってもボタンの位置が動かない。 */}
-      <div className="mt-3 mb-1 flex min-h-[13rem] w-full max-w-[34rem] flex-wrap
+          高さを決めておくと、個数が変わっても数字カードの位置が動かない。 */}
+      <div className="mt-3 mb-7 flex min-h-[13rem] w-full max-w-[34rem] flex-wrap
                       items-center justify-center gap-1.5 md:gap-3">
         {Array.from({ length: round.answer }, (_, i) => (
           <span
@@ -101,20 +101,6 @@ export function CountQuiz({ lang, speak, speakAll, talking }) {
           </span>
         ))}
       </div>
-
-      <button
-        type="button"
-        onClick={ask}
-        className={
-          "mt-2 mb-6 cursor-pointer rounded-full border-0 bg-ink px-8 py-4 font-round " +
-          "text-lg font-extrabold text-white shadow-[0_5px_0_rgba(0,0,0,.25)] " +
-          "transition-[transform,box-shadow] duration-100 " +
-          "active:translate-y-1 active:shadow-[0_1px_0_rgba(0,0,0,.25)] " +
-          (talking ? "animate-wobble" : "")
-        }
-      >
-        🔊 もういちど きく
-      </button>
 
       <div className="grid w-full max-w-[36rem] grid-cols-3 gap-4 md:gap-6">
         {round.pick.map(n => (
