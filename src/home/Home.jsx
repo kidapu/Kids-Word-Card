@@ -1,5 +1,6 @@
 /** アプリをえらぶ画面。増えたらここに1行足す。 */
 const APPS = [
+  // カードで遊ぶもの
   {
     path: "cards/",
     art: "🍎",
@@ -22,6 +23,14 @@ const APPS = [
     tint: "var(--color-purple)",
   },
   {
+    path: "letters/",
+    art: "🔤",
+    name: "もじカード",
+    sub: "ABC と あいうえお",
+    tint: "var(--color-blue)",
+  },
+  // 指で遊ぶもの
+  {
     path: "maze/",
     art: "🐰",
     name: "めいろ",
@@ -34,13 +43,6 @@ const APPS = [
     name: "なぞりカード",
     sub: "もじを ゆびで なぞる",
     tint: "var(--color-green)",
-  },
-  {
-    path: "letters/",
-    art: "🔤",
-    name: "もじカード",
-    sub: "ABC と あいうえお",
-    tint: "var(--color-blue)",
   },
 ];
 
