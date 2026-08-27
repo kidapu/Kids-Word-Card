@@ -84,3 +84,30 @@ export function addPrints(prints, from, to, carry, side) {
   }
   return { carry: travelled, side: s };
 }
+
+/** 点列の道のりを ratio（0〜1）だけ進んだところの座標 */
+export function pointAt(pts, ratio) {
+  if (!pts || pts.length === 0) return START;
+  if (pts.length === 1) return pts[0];
+
+  const segs = [];
+  let total = 0;
+  for (let i = 1; i < pts.length; i++) {
+    const d = Math.hypot(pts[i].x - pts[i - 1].x, pts[i].y - pts[i - 1].y);
+    segs.push(d);
+    total += d;
+  }
+
+  let want = total * Math.min(1, Math.max(0, ratio));
+  for (let i = 0; i < segs.length; i++) {
+    if (want <= segs[i]) {
+      const t = segs[i] ? want / segs[i] : 0;
+      return {
+        x: pts[i].x + (pts[i + 1].x - pts[i].x) * t,
+        y: pts[i].y + (pts[i + 1].y - pts[i].y) * t,
+      };
+    }
+    want -= segs[i];
+  }
+  return pts[pts.length - 1];
+}

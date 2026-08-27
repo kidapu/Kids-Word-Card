@@ -114,6 +114,11 @@ say -v Samantha "a" -o a.aiff && afinfo a.aiff | grep duration
 
 大文字は 0.8 秒前後、小文字は 0.3〜0.5 秒なので、「Capital」の有無がすぐ分かる。
 
+## トップのアプリ一覧
+
+iPad mini の縦（744px）で 3 列 2 段に収まる大きさにしてある。
+アプリが 7 つ以上になったら `src/home/Home.jsx` の列数とタイルの大きさを見直すこと。
+
 ## 影と `ring` は共存しない
 
 カードの押し込み（`pressable`）は生の `box-shadow` で書いている。Tailwind の

@@ -1,8 +1,10 @@
 import { useEffect, useRef, useState } from "react";
 import {
   W, H, BAR_H, START, GOAL, HOLE, TINTS,
-  makeLevel, hitsBar, atGoal, atStart, between, addPrints,
+  makeLevel, hitsBar, atGoal, atStart, between, addPrints, pointAt,
 } from "../maze.js";
+
+const RUN_MS = 1100;   // うさぎが道を走りきるまで
 import { burst } from "../../shared/burst.js";
 import { ding, buzz } from "../../shared/sfx.js";
 
@@ -14,6 +16,7 @@ export function MazeBoard({ stage, onClear }) {
   const [bars, setBars] = useState(() => makeLevel(stage));
   const [path, setPath] = useState([]);      // 描くためだけの控え
   const [prints, setPrints] = useState([]);  // うさぎの足あと
+  const [runner, setRunner] = useState(null);   // 道を走っているうさぎの居場所
   const trail = useRef([]);
   const carry = useRef(0);                   // 足あとを置くまでの残り
   const side = useRef(1);                    // つぎは右足か左足か
@@ -25,6 +28,7 @@ export function MazeBoard({ stage, onClear }) {
   const svg = useRef(null);
   const goalRef = useRef(null);
   const timer = useRef(null);
+  const raf = useRef(0);
 
   // 面が変わったら盤面を作り直す
   useEffect(() => {
@@ -35,11 +39,12 @@ export function MazeBoard({ stage, onClear }) {
     side.current = 1;
     setPath([]);
     setPrints([]);
+    setRunner(null);
     drawing.current = false;
     done.current = false;
   }, [stage]);
 
-  useEffect(() => () => clearTimeout(timer.current), []);
+  useEffect(() => () => { clearTimeout(timer.current); cancelAnimationFrame(raf.current); }, []);
 
   /** 画面の座標を、盤面の座標に直す */
   const toLocal = e => {
@@ -58,6 +63,7 @@ export function MazeBoard({ stage, onClear }) {
     side.current = 1;
     setPath([]);
     setPrints([]);
+    setRunner(null);
   };
 
   const fail = () => {
@@ -65,12 +71,24 @@ export function MazeBoard({ stage, onClear }) {
     reset();
   };
 
+  /** ゴールしたあと、なぞった道をうさぎが走っていく */
+  const runAlong = pts => {
+    const start = performance.now();
+    const tick = now => {
+      const t = Math.min(1, (now - start) / RUN_MS);
+      setRunner(pointAt(pts, t));
+      if (t < 1) raf.current = requestAnimationFrame(tick);
+    };
+    raf.current = requestAnimationFrame(tick);
+  };
+
   const clear = () => {
     done.current = true;
     drawing.current = false;
+    runAlong(points.current);
     ding();
     burst(goalRef.current);
-    timer.current = setTimeout(onClear, 1100);
+    timer.current = setTimeout(onClear, 1600);   // うさぎが走り終わるのを待つ
   };
 
   const down = e => {
@@ -151,7 +169,15 @@ export function MazeBoard({ stage, onClear }) {
       {/* スタートとゴール */}
       <circle cx={START.x} cy={START.y} r={HOLE} fill="var(--color-green)" opacity=".18" />
       <circle ref={goalRef} cx={GOAL.x} cy={GOAL.y} r={HOLE} fill="var(--color-red)" opacity=".18" />
-      <text x={START.x} y={START.y} textAnchor="middle" dominantBaseline="central" fontSize="12">🐰</text>
+      {/* ゴールしたら、うさぎは道を走っていくので、スタートからは消す */}
+      <text
+        x={runner ? runner.x : START.x}
+        y={runner ? runner.y : START.y}
+        textAnchor="middle" dominantBaseline="central"
+        fontSize={runner ? 13 : 12}
+      >
+        🐰
+      </text>
       <text x={GOAL.x} y={GOAL.y} textAnchor="middle" dominantBaseline="central" fontSize="12">🥕</text>
 
       {/* 通った道。うすいグレーで、足あとの下じきにする */}
