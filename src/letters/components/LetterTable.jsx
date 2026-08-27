@@ -1,19 +1,24 @@
 import { useMemo } from "react";
-import { SETS, flatten, sayOf, shuffle } from "../letters.js";
+import { SETS, flatten, sayOf } from "../letters.js";
 import { LOCALE } from "../../shared/lang.js";
+import { shuffle } from "../../shared/shuffle.js";
+import { useSaying } from "../../shared/useSaying.js";
 import { Letter } from "./Letter.jsx";
 
 /**
  * ずかん。sort が "table" のときは行ごとに並べて五十音表・アルファベット表の形にする。
  * "shuffle" のときは順番をばらして並べる（seed が変わるたびに混ぜ直す）。
  */
-export function LetterTable({ kind, sort, seed, speak }) {
+export function LetterTable({ kind, sort, seed, speakAll }) {
+  const { saying, say } = useSaying(speakAll);
+
   const shuffled = useMemo(
     () => (sort === "shuffle" ? shuffle(flatten(kind)) : null),
     [sort, kind, seed]
   );
 
-  const say = letter => speak(sayOf(letter, kind), LOCALE[kind]);
+  const tap = (letter, at) =>
+    say(at, [{ text: sayOf(letter, kind), lang: LOCALE[kind] }]);
 
   if (shuffled) {
     return (
@@ -23,9 +28,10 @@ export function LetterTable({ kind, sort, seed, speak }) {
             key={`${item.letter}-${i}`}
             letter={item.letter}
             row={item.row}
+            talking={saying === `s${i}`}
             delay={Math.min(i, 14) * 22}
             className="animate-deal"
-            onClick={() => say(item.letter)}
+            onClick={() => tap(item.letter, `s${i}`)}
           />
         ))}
       </div>
@@ -41,9 +47,10 @@ export function LetterTable({ kind, sort, seed, speak }) {
               <Letter
                 letter={letter}
                 row={r}
+                talking={saying === letter}
                 delay={Math.min(r * 5 + i, 14) * 22}
                 className="animate-deal"
-                onClick={() => say(letter)}
+                onClick={() => tap(letter, letter)}
               />
             </div>
           ))}

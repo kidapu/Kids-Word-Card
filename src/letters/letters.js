@@ -56,5 +56,3 @@ export const sayOf = (letter, kind) =>
 /** 行構造を平らにして、行番号（＝色）を添える */
 export const flatten = kind =>
   SETS[kind].rows.flatMap((row, r) => row.map(letter => ({ letter, row: r })));
-
-export const shuffle = a => a.map(v => [Math.random(), v]).sort((x, y) => x[0] - y[0]).map(v => v[1]);

@@ -26,5 +26,3 @@ export const COLORS = [
 
 /** その色を lang で読ませるときの文字列 */
 export const nameOf = (color, lang) => (lang === "ja" ? color.ja : color.en);
-
-export const shuffle = a => a.map(v => [Math.random(), v]).sort((x, y) => x[0] - y[0]).map(v => v[1]);

@@ -1,6 +1,7 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef } from "react";
 import { CARDS, wordOf } from "../cards.js";
 import { LOCALE, other } from "../../shared/lang.js";
+import { useSaying } from "../../shared/useSaying.js";
 import { Card } from "./Card.jsx";
 
 /**
@@ -9,7 +10,7 @@ import { Card } from "./Card.jsx";
  * seed が変わるとグリッドごと作り直されて、カードが配られる演出が走る。
  */
 export function BookMode({ pages, onNeedMore, seed, lang, speakAll }) {
-  const [saying, setSaying] = useState(null);   // いま喋っているカードの位置
+  const { saying, say } = useSaying(speakAll);
   const sentinel = useRef(null);
 
   // 下端が近づいたら次の巡りを足す。600px 手前で先に呼んで、継ぎ目を感じさせない。
@@ -24,17 +25,12 @@ export function BookMode({ pages, onNeedMore, seed, lang, speakAll }) {
     return () => io.disconnect();
   }, [onNeedMore]);
 
-  const say = (card, at) => {
+  const tap = (card, at) => {
     const second = other(lang);
-    setSaying(at);
-    speakAll(
-      [
-        { text: wordOf(card, lang),   lang: LOCALE[lang] },
-        { text: wordOf(card, second), lang: LOCALE[second] },
-      ],
-      // 途中で別のカードを押されたら、そちらの光りを消さないようにする
-      () => setSaying(s => (s === at ? null : s))
-    );
+    say(at, [
+      { text: wordOf(card, lang),   lang: LOCALE[lang] },
+      { text: wordOf(card, second), lang: LOCALE[second] },
+    ]);
   };
 
   return (
@@ -52,7 +48,7 @@ export function BookMode({ pages, onNeedMore, seed, lang, speakAll }) {
                 card={CARDS[i]}
                 lang={lang}
                 talking={saying === at}
-                onClick={() => say(CARDS[i], at)}
+                onClick={() => tap(CARDS[i], at)}
                 // 配られる演出は最初の巡りだけ。継ぎ足し分はすぐ出す。
                 delay={page === 0 ? Math.min(pos, 14) * 22 : 0}
                 className="animate-deal"

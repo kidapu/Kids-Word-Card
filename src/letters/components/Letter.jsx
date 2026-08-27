@@ -1,7 +1,7 @@
 import { TINTS } from "../letters.js";
 
 /** もじ1つ。押すと発音する。 */
-export function Letter({ letter, row, onClick, delay = 0, className = "", ...rest }) {
+export function Letter({ letter, row, onClick, talking = false, delay = 0, className = "", ...rest }) {
   return (
     <button
       type="button"
@@ -17,7 +17,11 @@ export function Letter({ letter, row, onClick, delay = 0, className = "", ...res
       }
       {...rest}
     >
-      <span className="text-[clamp(34px,9vw,64px)] leading-none">{letter}</span>
+      <span
+        className={"text-[clamp(34px,9vw,64px)] leading-none " + (talking ? "animate-wobble" : "")}
+      >
+        {letter}
+      </span>
     </button>
   );
 }

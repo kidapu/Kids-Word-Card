@@ -10,7 +10,7 @@ export default function App() {
   const [kind, setKind] = useState("en");    // ABC か あいう か
   const [sort, setSort] = useState("table"); // 表のまま か ばらばら か
   const [seed, setSeed] = useState(0);
-  const { speak, stop, talking } = useSpeech();
+  const { speak, speakAll, stop, talking } = useSpeech();
 
   const switchMode = next => { pip(); stop(); setMode(next); };
   const switchKind = next => { pip(); stop(); setKind(next); };
@@ -54,9 +54,9 @@ export default function App() {
   return (
     <Shell header={header}>
       {mode === "table" ? (
-        <LetterTable kind={kind} sort={sort} seed={seed} speak={speak} />
+        <LetterTable kind={kind} sort={sort} seed={seed} speakAll={speakAll} />
       ) : (
-        <LetterQuiz kind={kind} speak={speak} talking={talking} />
+        <LetterQuiz kind={kind} speak={speak} speakAll={speakAll} talking={talking} />
       )}
     </Shell>
   );

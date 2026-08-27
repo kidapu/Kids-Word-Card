@@ -1,23 +1,18 @@
-import { useState } from "react";
 import { COLORS, nameOf } from "../colors.js";
 import { LOCALE, other } from "../../shared/lang.js";
+import { useSaying } from "../../shared/useSaying.js";
 import { ColorCard } from "./ColorCard.jsx";
 
 /** ずかん。押すと2つのことばで色の名前を続けて読む。 */
 export function ColorTable({ lang, speakAll }) {
-  const [saying, setSaying] = useState(null);
+  const { saying, say } = useSaying(speakAll);
 
-  const say = color => {
+  const tap = color => {
     const second = other(lang);
-    setSaying(color.en);
-    speakAll(
-      [
-        { text: nameOf(color, lang),   lang: LOCALE[lang] },
-        { text: nameOf(color, second), lang: LOCALE[second] },
-      ],
-      // 途中で別の色を押されたら、そちらの光りを消さないようにする
-      () => setSaying(s => (s === color.en ? null : s))
-    );
+    say(color.en, [
+      { text: nameOf(color, lang),   lang: LOCALE[lang] },
+      { text: nameOf(color, second), lang: LOCALE[second] },
+    ]);
   };
 
   return (
@@ -31,7 +26,7 @@ export function ColorTable({ lang, speakAll }) {
           talking={saying === color.en}
           className="animate-deal"
           style={{ animationDelay: `${Math.min(i, 14) * 30}ms` }}
-          onClick={() => say(color)}
+          onClick={() => tap(color)}
         />
       ))}
     </div>

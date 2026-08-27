@@ -26,10 +26,14 @@ letters/index.html               もじカード
 src/shared/                      アプリ共通
   index.css                        Tailwind のテーマ（色・ブレークポイント）
   ui.jsx                           ヘッダの外枠とボタン類
+  useQuiz.js                       クイズの進行（出題・正誤・次の問題へ）
+  QuizScreen.jsx                   クイズ画面の枠（スコアと 3 択の並び）
+  useSaying.js                     ずかんで「押したものが喋る間だけ光る」
   useSpeech.js                     読み上げ。将来 mp3 に差し替える窓口
   sfx.js                           ピンポン / ブー / ピン（Web Audio で合成）
   burst.js                         正解したときの紙吹雪
   lang.js                          en / ja の対応
+  shuffle.js                       並びをばらす
 
 src/home/                        アプリをえらぶ画面
 src/cards/                       おしゃべりカード
@@ -107,11 +111,30 @@ say -v Samantha "a" -o a.aiff && afinfo a.aiff | grep duration
 `ring-*` も `box-shadow` を使うので、両方つけると **ring が影を打ち消す**。
 縁が必要なときは `border` を使うこと。
 
-## クイズのタイマー
+## クイズの作り方
 
-`setTimeout` は、問題が変わるたびに**全部捨てる**こと。前の問題のタイマー
+進行は `src/shared/useQuiz.js` に集約してある。アプリ側は「出題の作り方」と
+「何を読むか」だけを書く。
+
+```js
+const quiz = useQuiz({
+  makeRound,   // () => ({ pick, target })  target は pick の中の位置
+  ask,         // (round) => void            出題を読む
+  sayRight,    // (item, done) => void       正解のとき。読み終わったら done()
+  sayWrong,    // (item) => void             間違えたとき、押したものを読む
+});
+```
+
+渡す関数は **`useCallback` で包むこと**。毎回作り直すと出題が鳴り直してしまう。
+
+効果音・紙吹雪・スコア・次の問題へ進む段取り・タイマーの後始末は `useQuiz` が持つ。
+見た目は `QuizScreen` に渡す（`above` で 3 択の上に何か置ける。
+`onReplay` を渡すと「もういちど きく」ボタンが出る）。
+
+`setTimeout` は問題が変わるたびに**全部捨てている**。前の問題のタイマー
 （特に読み上げが返ってこないとき用の 6 秒の保険）が残っていると、次の問題の
 読み上げ中に発火して問題を飛ばす。速く連続で正解したときだけ起きるので気づきにくい。
+この後始末は `useQuiz` の中にあるので、アプリ側で `setTimeout` を書き足さないこと。
 
 ## アプリを増やすとき
 

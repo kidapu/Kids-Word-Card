@@ -1,5 +1,6 @@
 import { useCallback, useState } from "react";
-import { CARDS, shuffle } from "./cards.js";
+import { CARDS } from "./cards.js";
+import { shuffle } from "../shared/shuffle.js";
 import { useSpeech } from "../shared/useSpeech.js";
 import { pip } from "../shared/sfx.js";
 import { Shell, HomeButton, Tool, Pills, Pill } from "../shared/ui.jsx";
