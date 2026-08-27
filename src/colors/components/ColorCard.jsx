@@ -9,16 +9,18 @@ import { other } from "../../shared/lang.js";
 export function ColorCard({ color, lang = "en", showName = false, talking = false,
                            onClick, className = "", style, ...rest }) {
   const text = color.dark ? "text-white" : "text-ink";
+  // にじいろは下地の明るさがまちまちなので、文字に影をつけて読めるようにする
+  const glow = color.glow ? "[text-shadow:0_1px_4px_rgba(0,0,0,.55)]" : "";
 
   return (
     <button
       type="button"
       onClick={onClick}
-      style={{ "--tint": color.shade, background: color.hex, ...style }}
+      style={{ "--tint": color.shade, background: color.fill, ...style }}
       className={
         "pressable flex aspect-square w-full flex-col items-center justify-center gap-0.5 " +
-        "rounded-[22px] border-0 font-round cursor-pointer " +
-        "border border-black/10 " + text + " " + className
+        "rounded-[22px] font-round cursor-pointer " +
+        "border border-black/10 " + text + " " + glow + " " + className
       }
       {...rest}
     >
