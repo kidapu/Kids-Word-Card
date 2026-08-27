@@ -18,6 +18,11 @@ const ALPHABET_ROWS = [
   ["Z"],
 ];
 
+const NUMBER_ROWS = [
+  ["1", "2", "3", "4", "5"],
+  ["6", "7", "8", "9", "0"],
+];
+
 const KANA_ROWS = [
   ["あ", "い", "う", "え", "お"],
   ["か", "き", "く", "け", "こ"],
@@ -45,8 +50,10 @@ const SAY = {
 };
 
 export const SETS = {
-  en: { rows: ALPHABET_ROWS, label: "アルファベット" },
-  ja: { rows: KANA_ROWS,     label: "ひらがな" },
+  en:  { rows: ALPHABET_ROWS, label: "アルファベット" },
+  ja:  { rows: KANA_ROWS,     label: "ひらがな" },
+  // なぞりカードだけで使う。もじカードのトグルは あいう / ABC の 2 つのまま。
+  num: { rows: NUMBER_ROWS,   label: "すうじ" },
 };
 
 /** 表示は文字そのまま、読み上げだけ差し替える */

@@ -24,6 +24,7 @@ export default function App() {
       <Pills>
         <Pill on={kind === "ja"} onClick={() => switchKind("ja")} label="ひらがな">あいう</Pill>
         <Pill on={kind === "en"} onClick={() => switchKind("en")} label="アルファベット">ABC</Pill>
+        <Pill on={kind === "num"} onClick={() => switchKind("num")} label="すうじ">123</Pill>
       </Pills>
 
       <Tool onClick={erase} label="けす">
