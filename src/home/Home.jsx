@@ -8,6 +8,13 @@ const APPS = [
     tint: "var(--color-red)",
   },
   {
+    path: "counting/",
+    art: "🔢",
+    name: "かずカード",
+    sub: "いくつ？ を あてる",
+    tint: "var(--color-green)",
+  },
+  {
     path: "letters/",
     art: "🔤",
     name: "もじカード",

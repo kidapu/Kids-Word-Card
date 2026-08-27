@@ -19,6 +19,7 @@ Tailwind は `@tailwindcss/vite` プラグイン方式。設定ファイルは�
 ```
 index.html                       アプリをえらぶ画面
 cards/index.html                 おしゃべりカード
+counting/index.html              かずカード
 letters/index.html               もじカード
 
 src/shared/                      アプリ共通
@@ -33,6 +34,9 @@ src/home/                        アプリをえらぶ画面
 src/cards/                       おしゃべりカード
   cards.js                         カードデータ（1行足せばカードが増える）
   components/                      Card / BookMode / QuizMode
+src/counting/                    かずカード
+  counting.js                      数と、数える絵
+  components/                      NumberCard / NumberTable / CountQuiz
 src/letters/                     もじカード
   letters.js                       文字データと読み方の差し替え
   components/                      Letter / LetterTable / LetterQuiz
